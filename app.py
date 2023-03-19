@@ -60,7 +60,16 @@ def prepare_data(df, target_col, window_len=10, zero_base=True, test_size=0.2):
 
     return train_data, test_data, X_train, X_test, y_train, y_test
     
+def build_lstm_model(input_data, output_size, neurons=100, activ_func='linear',
+                     dropout=0.2, loss='mse', optimizer='adam'):
+    model = Sequential()
+    model.add(LSTM(neurons, input_shape=(input_data.shape[1], input_data.shape[2])))
+    model.add(Dropout(dropout))
+    model.add(Dense(units=output_size))
+    model.add(Activation(activ_func))
 
+    model.compile(loss=loss, optimizer=optimizer)
+    return model
 
 
 
@@ -99,8 +108,26 @@ if __name__=='__main__':
     train, test, X_train, X_test, y_train, y_test = prepare_data(
         hist, target_col, window_len=window_len, zero_base=zero_base, test_size=test_size)
 
-    st.write('Training shape:' + str(train.shape))
-    
+    st.write('Train shape: ' + str(train.shape))
+    st.write('Test shape: ' + str(test.shape))
+    st.write('X_Train shape: ' + str(X_train.shape))
+    st.write('y_Train shape: ' + str(y_train.shape))
+    st.write('X_Test shape: ' + str(X_test.shape))
+    st.write('y_Test shape: ' + str(y_test.shape))
+
+    model = build_lstm_model(
+        X_train, output_size=1, neurons=lstm_neurons, dropout=dropout, loss=loss,
+        optimizer=optimizer)
+    history = model.fit(
+        X_train, y_train, validation_data=(X_test, y_test), epochs=epochs, batch_size=batch_size, verbose=1, shuffle=True)
+
+    plt.plot(history.history['loss'],'r',linewidth=2, label='Train loss')
+    plt.plot(history.history['val_loss'], 'g',linewidth=2, label='Validation loss')
+    plt.title('LSTM')
+    plt.xlabel('Epochs')
+    plt.ylabel('MSE')
+    plt.show()
+    st.pyplot(plt)
 
 
     image = Image.open('resume_image.jpeg')
