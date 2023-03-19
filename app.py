@@ -5,7 +5,8 @@ from ai_improver import *
 from cv_scanner import *
 
 import json
-import datetime;
+import datetime
+import time
 import requests
 from keras.models import Sequential
 from keras.layers import Activation, Dense, Dropout, LSTM
