@@ -1,8 +1,8 @@
 streamlit
 openai
 requests
-keras
 tensorflow
+keras
 matplotlib
 numpy
 pandas
