@@ -18,6 +18,16 @@ def experience_result(experience_text):
     return text
     
 if __name__=='__main__':
+    
+    endpoint = 'https://min-api.cryptocompare.com/data/histoday'
+    res = requests.get(endpoint + '?fsym=ETH&tsym=USD&limit=500')
+    hist = pd.DataFrame(json.loads(res.content)['Data'])
+    hist = hist.set_index('time')
+    hist.index = pd.to_datetime(hist.index, unit='s')
+    target_col = 'close'
+      
+    st.write(target_col)
+    
     image = Image.open('resume_image.jpeg')
     st.image(image, caption='Photo by Unseen Studio on Unsplash')
     st.header('Improving your CV in seconds using ChatGPT!')
