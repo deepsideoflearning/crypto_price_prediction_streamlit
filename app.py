@@ -17,17 +17,21 @@ from sklearn.metrics import mean_squared_error
 from sklearn.metrics import r2_score
 
 
-def summary_result(string_data):
-    st.write('Improving the summary for you! :rocket:')
-    trimmed_text=get_fixedkey_text(FIXED_KEYS[1],string_data)
-    text = summary_corrector(trimmed_text)
-    return text
+def train_test_split(df, test_size=0.2):
+    split_row = len(df) - int(test_size * len(df))
+    train_data = df.iloc[:split_row]
+    test_data = df.iloc[split_row:]
+    return train_data, test_data
     
-def experience_result(experience_text):
-    st.write('Improving the work experience for you!')
-    text=single_experience_corrector(experience_text)
-    return text
-    
+def line_plot(line1, line2, label1=None, label2=None, title='', lw=2):
+    fig, ax = plt.subplots(1, figsize=(13, 7))
+    ax.plot(line1, label=label1, linewidth=lw)
+    ax.plot(line2, label=label2, linewidth=lw)
+    ax.set_ylabel('price [USD]', fontsize=14)
+    ax.set_title(title, fontsize=16)
+    ax.legend(loc='best', fontsize=16)
+    st.pyplot(fig)
+
 if __name__=='__main__':
 
     endpoint = 'https://min-api.cryptocompare.com/data/histoday'
@@ -36,10 +40,13 @@ if __name__=='__main__':
     hist = hist.set_index('time')
     hist.index = pd.to_datetime(hist.index, unit='s')
     target_col = 'close'
-      
-    st.write(target_col)
+
+    hist.drop(["conversionType", "conversionSymbol"], axis = 'columns', inplace = True)
+
     st.write(hist)
     
+    train, test = train_test_split(hist, test_size=0.2)
+    line_plot(train[target_col], test[target_col], 'training', 'test', title='')
 
     image = Image.open('resume_image.jpeg')
     st.image(image, caption='Photo by Unseen Studio on Unsplash')
