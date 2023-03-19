@@ -37,9 +37,10 @@ def line_plot2(line1, line2, label1=None, label2=None, title='', lw=2):
     fig, ax = plt.subplots(1, figsize=(13, 7))
     ax.plot(line1,'r',linewidth=2, label=label1)
     ax.plot(line2, 'g',linewidth=2, label=label2)
-    ax.title('LSTM')
-    ax.xlabel('Epochs')
-    ax.ylabel('MSE')
+    ax.set_title('LSTM', fontsize=16)
+    ax.set_xlabel('Epochs', fontsize=14)
+    ax.set_ylabel('MSE', fontsize=14)
+    ax.legend(loc='best', fontsize=16)
     st.pyplot(fig)
 
 def normalise_zero_base(df):
@@ -132,6 +133,10 @@ if __name__=='__main__':
 
     line_plot2(history.history['loss'], history.history['val_loss'], 'Train loss', 'Validation loss', title='')
 
+
+
+
+    time.sleep(1000)
 
     image = Image.open('resume_image.jpeg')
     st.image(image, caption='Photo by Unseen Studio on Unsplash')
