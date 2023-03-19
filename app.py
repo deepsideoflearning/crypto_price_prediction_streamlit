@@ -1,6 +1,8 @@
 from PIL import Image
 import streamlit as st
 from constants import *
+from ai_improver import *
+from cv_scanner import *
 
 import json
 import requests
@@ -44,7 +46,7 @@ if __name__=='__main__':
     st.header('Improving your CV in seconds using ChatGPT!')
     st.write('This app is meant to improve the quality of your CV by using Artificial Intelligence\n Start by downloading the template, fill the information, upload your CV and enjoy the magic! :smile:')
     st.write("\n Let's see what you got! Download the following template and fill it out with your information! :sunglasses:")
-    download_template()
+#    download_template()
     uploaded_file = st.file_uploader("Upload your CV here! :point_down:") 
     reviewed_experiences = []
     if uploaded_file is not None:
