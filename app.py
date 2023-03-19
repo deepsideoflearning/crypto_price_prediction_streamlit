@@ -134,6 +134,30 @@ if __name__=='__main__':
 
     line_plot2(history.history['loss'], history.history['val_loss'], 'Train loss', 'Validation loss', title='')
 
+    preds = model.predict(X_test).squeeze()
+    st.write('mae = ' + str(mean_absolute_error(preds, y_test)))
+    st.write('mse = ' + str(mean_squared_error(preds, y_test)))
+    st.write('r2 = ' + str(r2_score(y_test, preds)))
+
+    st.write('First test of window shape:' + str(test[target_col].values[:-window_len].shape))
+    st.write(test[target_col].values[:-window_len])
+
+    targets = test[target_col][window_len:]
+    st.write('Target shape:' + str(targets.shape))
+    st.write(targets)
+
+    st.write('Raw predicted shape:' + str(preds.shape))
+    st.write(preds)
+
+    st.write('(Normalized) y_test shape:' + str(y_test.shape))
+    st.write(y_test)
+
+    preds = test[target_col].values[:-window_len] * (preds + 1)
+    st.write('Predicted shape:' + str(preds.shape))
+    st.write(preds)
+
+    preds = pd.Series(index=targets.index, data=preds)
+    line_plot(targets, preds, 'actual', 'prediction', lw=3)
 
 
     progress_text = "Waiting 5 minutes to refresh:"
@@ -142,6 +166,9 @@ if __name__=='__main__':
     for percent_complete in range(600):
         sleep(1)
         my_bar.progress(percent_complete + 1, text=progress_text)
+
+
+
 
     image = Image.open('resume_image.jpeg')
     st.image(image, caption='Photo by Unseen Studio on Unsplash')
