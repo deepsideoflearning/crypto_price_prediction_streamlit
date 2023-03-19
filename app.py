@@ -33,6 +33,37 @@ def line_plot(line1, line2, label1=None, label2=None, title='', lw=2):
     ax.legend(loc='best', fontsize=16)
     st.pyplot(fig)
 
+def normalise_zero_base(df):
+    return df / df.iloc[0] - 1
+
+def normalise_min_max(df):
+    return (df - df.min()) / (data.max() - df.min())
+    
+def extract_window_data(df, window_len=5, zero_base=True):
+    window_data = []
+    for idx in range(len(df) - window_len):
+        tmp = df[idx: (idx + window_len)].copy()
+        if zero_base:
+            tmp = normalise_zero_base(tmp)
+        window_data.append(tmp.values)
+    return np.array(window_data)
+    
+def prepare_data(df, target_col, window_len=10, zero_base=True, test_size=0.2):
+    train_data, test_data = train_test_split(df, test_size=test_size)
+    X_train = extract_window_data(train_data, window_len, zero_base)
+    X_test = extract_window_data(test_data, window_len, zero_base)
+    y_train = train_data[target_col][window_len:].values
+    y_test = test_data[target_col][window_len:].values
+    if zero_base:
+        y_train = y_train / train_data[target_col][:-window_len].values - 1
+        y_test = y_test / test_data[target_col][:-window_len].values - 1
+
+    return train_data, test_data, X_train, X_test, y_train, y_test
+    
+
+
+
+
 if __name__=='__main__':
 
     endpoint = 'https://min-api.cryptocompare.com/data/histoday'
@@ -45,12 +76,32 @@ if __name__=='__main__':
     hist.drop(["conversionType", "conversionSymbol"], axis = 'columns', inplace = True)
 
     ct = datetime.datetime.now()
-    st.write("Current time:-", ct)
+    st.write("Current time:", ct)
     st.header('Bitcoin daily activity')
     st.write(hist)
     
     train, test = train_test_split(hist, test_size=0.2)
+
+    st.header('Closing daily price')
     line_plot(train[target_col], test[target_col], 'training', 'test', title='')
+
+    np.random.seed(42)
+    window_len = 10
+    test_size = 0.2
+    zero_base = True
+    lstm_neurons = 100
+    epochs = 30
+    batch_size = 32
+    loss = 'mse'
+    dropout = 0.2
+    optimizer = 'adam'
+
+    train, test, X_train, X_test, y_train, y_test = prepare_data(
+        hist, target_col, window_len=window_len, zero_base=zero_base, test_size=test_size)
+
+    st.write('Training shape:' + train.shape)
+    
+
 
     image = Image.open('resume_image.jpeg')
     st.image(image, caption='Photo by Unseen Studio on Unsplash')
