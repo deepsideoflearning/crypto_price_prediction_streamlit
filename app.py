@@ -33,6 +33,15 @@ def line_plot(line1, line2, label1=None, label2=None, title='', lw=2):
     ax.legend(loc='best', fontsize=16)
     st.pyplot(fig)
 
+def line_plot2(line1, line2, label1=None, label2=None, title='', lw=2):
+    fig, ax = plt.subplots(1, figsize=(13, 7))
+    ax.plot(line1,'r',linewidth=2, label=label1)
+    ax.plot(line2, 'g',linewidth=2, label=label2)
+    ax.title('LSTM')
+    ax.xlabel('Epochs')
+    ax.ylabel('MSE')
+    st.pyplot(fig)
+
 def normalise_zero_base(df):
     return df / df.iloc[0] - 1
 
@@ -121,13 +130,7 @@ if __name__=='__main__':
     history = model.fit(
         X_train, y_train, validation_data=(X_test, y_test), epochs=epochs, batch_size=batch_size, verbose=1, shuffle=True)
 
-    plt.plot(history.history['loss'],'r',linewidth=2, label='Train loss')
-    plt.plot(history.history['val_loss'], 'g',linewidth=2, label='Validation loss')
-    plt.title('LSTM')
-    plt.xlabel('Epochs')
-    plt.ylabel('MSE')
-    plt.show()
-    st.pyplot(plt)
+    line_plot2(history.history['loss'], history.history['val_loss'], 'Train loss', 'Validation loss', title='')
 
 
     image = Image.open('resume_image.jpeg')
