@@ -99,7 +99,7 @@ if __name__=='__main__':
     train, test, X_train, X_test, y_train, y_test = prepare_data(
         hist, target_col, window_len=window_len, zero_base=zero_base, test_size=test_size)
 
-    st.write('Training shape:' + train.shape)
+    st.write('Training shape:' + str(train.shape))
     
 
 
