@@ -1,3 +1,7 @@
+from PIL import Image
+import streamlit as st
+from constants import *
+
 import json
 import requests
 from keras.models import Sequential
@@ -9,13 +13,6 @@ import seaborn as sns
 from sklearn.metrics import mean_absolute_error
 from sklearn.metrics import mean_squared_error
 from sklearn.metrics import r2_score
-
-
-from PIL import Image
-import streamlit as st
-from ai_improver import * 
-from constants import * 
-from cv_scanner import * 
 
 
 def summary_result(string_data):
@@ -30,7 +27,7 @@ def experience_result(experience_text):
     return text
     
 if __name__=='__main__':
-    
+
     endpoint = 'https://min-api.cryptocompare.com/data/histoday'
     res = requests.get(endpoint + '?fsym=ETH&tsym=USD&limit=500')
     hist = pd.DataFrame(json.loads(res.content)['Data'])
@@ -41,6 +38,7 @@ if __name__=='__main__':
     st.write(target_col)
     st.write(hist)
     
+
     image = Image.open('resume_image.jpeg')
     st.image(image, caption='Photo by Unseen Studio on Unsplash')
     st.header('Improving your CV in seconds using ChatGPT!')
