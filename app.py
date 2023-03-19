@@ -39,6 +39,7 @@ if __name__=='__main__':
     target_col = 'close'
       
     st.write(target_col)
+    st.write(hist)
     
     image = Image.open('resume_image.jpeg')
     st.image(image, caption='Photo by Unseen Studio on Unsplash')
