@@ -2,6 +2,7 @@ streamlit
 openai
 requests
 keras
+tensorflow
 matplotlib
 numpy
 pandas
