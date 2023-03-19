@@ -6,7 +6,7 @@ from cv_scanner import *
 
 import json
 import datetime
-import time
+from time import sleep
 import requests
 from keras.models import Sequential
 from keras.layers import Activation, Dense, Dropout, LSTM
@@ -136,8 +136,12 @@ if __name__=='__main__':
 
 
 
+    progress_text = "Waiting 5 minutes to refresh:"
+    my_bar = st.progress(0, text=progress_text)
 
-    time.sleep(1000)
+    for percent_complete in range(600):
+        sleep(1)
+        my_bar.progress(percent_complete + 1, text=progress_text)
 
     image = Image.open('resume_image.jpeg')
     st.image(image, caption='Photo by Unseen Studio on Unsplash')
