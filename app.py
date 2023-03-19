@@ -5,6 +5,7 @@ from ai_improver import *
 from cv_scanner import *
 
 import json
+import datetime;
 import requests
 from keras.models import Sequential
 from keras.layers import Activation, Dense, Dropout, LSTM
@@ -43,6 +44,9 @@ if __name__=='__main__':
 
     hist.drop(["conversionType", "conversionSymbol"], axis = 'columns', inplace = True)
 
+    ct = datetime.datetime.now()
+    st.write("Current time:-", ct)
+    st.header('Bitcoin daily activity')
     st.write(hist)
     
     train, test = train_test_split(hist, test_size=0.2)
