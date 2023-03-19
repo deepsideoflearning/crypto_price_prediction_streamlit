@@ -160,13 +160,14 @@ if __name__=='__main__':
     line_plot(targets, preds, 'actual', 'prediction', lw=3)
 
 
-    progress_text = "Waiting 5 minutes to refresh:"
+    progress_text = "Waiting 1 minute to refresh:"
     my_bar = st.progress(0, text=progress_text)
+    seconds = 60
 
-    for percent_complete in range(600):
+
+    for second in range(seconds):
         sleep(1)
-        my_bar.progress(percent_complete + 1, text=progress_text)
-
+        my_bar.progress(second/seconds*100, text=progress_text)
 
 
 
