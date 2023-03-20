@@ -87,7 +87,7 @@ def build_lstm_model(input_data, output_size, neurons=100, activ_func='linear',
 if __name__=='__main__':
 
     endpoint = 'https://min-api.cryptocompare.com/data/histoday'
-    res = requests.get(endpoint + '?fsym=ETH&tsym=USD&limit=500')
+    res = requests.get(endpoint + '?fsym=BTC&tsym=USD&limit=500')
     hist = pd.DataFrame(json.loads(res.content)['Data'])
     hist = hist.set_index('time')
     hist.index = pd.to_datetime(hist.index, unit='s')
