@@ -87,10 +87,7 @@ if __name__=='__main__':
     data_choice = st.radio("Show data",("Yes", "No"))
     coin_choice = st.radio("Coin",("BTC", "ETH"))
 
-    st.write(coin_choice)
     endpoint = 'https://min-api.cryptocompare.com/data/histoday'
-    request_string =endpoint + '?fsym='+coin_choice+'&tsym=USD&limit=500'
-    st.write(request_string)
     res = requests.get(endpoint + '?fsym='+coin_choice+'&tsym=USD&limit=500')
     hist = pd.DataFrame(json.loads(res.content)['Data'])
     hist = hist.set_index('time')
@@ -107,7 +104,7 @@ if __name__=='__main__':
     
     train, test = train_test_split(hist, test_size=0.2)
 
-    st.header(coin_choice+'Closing daily price')
+    st.header(coin_choice+' Closing daily price')
     line_plot(train[target_col], test[target_col], 'training', 'test', title='')
 
     np.random.seed(42)
@@ -124,12 +121,13 @@ if __name__=='__main__':
     train, test, X_train, X_test, y_train, y_test = prepare_data(
         hist, target_col, window_len=window_len, zero_base=zero_base, test_size=test_size)
 
-    st.write('Train shape: ' + str(train.shape))
-    st.write('Test shape: ' + str(test.shape))
-    st.write('X_Train shape: ' + str(X_train.shape))
-    st.write('y_Train shape: ' + str(y_train.shape))
-    st.write('X_Test shape: ' + str(X_test.shape))
-    st.write('y_Test shape: ' + str(y_test.shape))
+    if data_choice == 'Yes':
+        st.write('Train shape: ' + str(train.shape))
+        st.write('Test shape: ' + str(test.shape))
+        st.write('X_Train shape: ' + str(X_train.shape))
+        st.write('y_Train shape: ' + str(y_train.shape))
+        st.write('X_Test shape: ' + str(X_test.shape))
+        st.write('y_Test shape: ' + str(y_test.shape))
 
     model = build_lstm_model(
         X_train, output_size=1, neurons=lstm_neurons, dropout=dropout, loss=loss,
@@ -144,22 +142,25 @@ if __name__=='__main__':
     st.write('mse = ' + str(mean_squared_error(preds, y_test)))
     st.write('r2 = ' + str(r2_score(y_test, preds)))
 
-    st.write('First test of window shape:' + str(test[target_col].values[:-window_len].shape))
-    st.write(test[target_col].values[:-window_len])
+    if data_choice == 'Yes':
+        st.write('First test of window shape:' + str(test[target_col].values[:-window_len].shape))
+        st.write(test[target_col].values[:-window_len])
 
     targets = test[target_col][window_len:]
-    st.write('Target shape:' + str(targets.shape))
-    st.write(targets)
-
-    st.write('Raw predicted shape:' + str(preds.shape))
-    st.write(preds)
-
-    st.write('(Normalized) y_test shape:' + str(y_test.shape))
-    st.write(y_test)
-
     preds = test[target_col].values[:-window_len] * (preds + 1)
-    st.write('Predicted shape:' + str(preds.shape))
-    st.write(preds)
+
+    if data_choice == 'Yes':
+        st.write('Target shape:' + str(targets.shape))
+        st.write(targets)
+
+        st.write('Raw predicted shape:' + str(preds.shape))
+        st.write(preds)
+
+        st.write('(Normalized) y_test shape:' + str(y_test.shape))
+        st.write(y_test)
+
+        st.write('Predicted shape:' + str(preds.shape))
+        st.write(preds)
 
     preds = pd.Series(index=targets.index, data=preds)
     line_plot(targets, preds, 'actual', 'prediction', lw=3)
