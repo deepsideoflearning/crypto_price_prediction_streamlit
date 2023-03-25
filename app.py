@@ -59,10 +59,16 @@ def extract_window_data(df, window_len=5, zero_base=True):
     
 def prepare_data(df, target_col, window_len=10, zero_base=True, test_size=0.2):
     train_data, test_data = train_test_split(df, test_size=test_size)
+    st.sidebar.write('train_data shape:' + str(train_data.shape))
+    st.sidebar.write('test_data shape:' + str(test_data.shape))
     X_train = extract_window_data(train_data, window_len, zero_base)
+    st.sidebar.write('X_train shape:' + str(X_train.shape))
     X_test = extract_window_data(test_data, window_len, zero_base)
+    st.sidebar.write('X_test shape:' + str(X_test.shape))
     y_train = train_data[target_col][window_len:].values
+    st.sidebar.write('y_train shape:' + str(y_train.shape))
     y_test = test_data[target_col][window_len:].values
+    st.sidebar.write('y_test shape:' + str(y_test.shape))
     if zero_base:
         y_train = y_train / train_data[target_col][:-window_len].values - 1
         y_test = y_test / test_data[target_col][:-window_len].values - 1
