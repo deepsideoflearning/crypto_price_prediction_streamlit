@@ -84,8 +84,11 @@ def build_lstm_model(input_data, output_size, neurons=100, activ_func='linear',
 
 if __name__=='__main__':
 
+    data_choice = st.radio("Show data",("Yes", "No"))
+    coin_choice = st.radio("Coin",("BTC", "ETH"))
+
     endpoint = 'https://min-api.cryptocompare.com/data/histoday'
-    res = requests.get(endpoint + '?fsym=BTC&tsym=USD&limit=500')
+    res = requests.get(endpoint + '?fsym="+coin_choice+"&tsym=USD&limit=500')
     hist = pd.DataFrame(json.loads(res.content)['Data'])
     hist = hist.set_index('time')
     hist.index = pd.to_datetime(hist.index, unit='s')
@@ -95,12 +98,13 @@ if __name__=='__main__':
 
     ct = datetime.datetime.now()
     st.write("Current time:", ct)
-    st.header('Bitcoin daily activity')
-    st.write(hist)
+    if data_choice == 'Yes':
+        st.header(coin_choice +' daily activity')
+        st.write(hist)
     
     train, test = train_test_split(hist, test_size=0.2)
 
-    st.header('Closing daily price')
+    st.header(coin_choice+'Closing daily price')
     line_plot(train[target_col], test[target_col], 'training', 'test', title='')
 
     np.random.seed(42)
