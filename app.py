@@ -84,8 +84,13 @@ def build_lstm_model(input_data, output_size, neurons=100, activ_func='linear',
 
 if __name__=='__main__':
 
-    data_choice = st.radio("Show data",("Yes", "No"))
-    coin_choice = st.radio("Coin",("BTC", "ETH"))
+    st.sidebar.title('Navigation')
+
+    ct = datetime.datetime.now()
+    st.sidebar.write("Current time:", ct)
+
+    data_choice = st.sidebar.radio("Show data",("Yes", "No"))
+    coin_choice = st.sidebar.radio("Coin",("BTC", "ETH"))
 
     endpoint = 'https://min-api.cryptocompare.com/data/histoday'
     res = requests.get(endpoint + '?fsym='+coin_choice+'&tsym=USD&limit=500')
@@ -96,8 +101,6 @@ if __name__=='__main__':
 
     hist.drop(["conversionType", "conversionSymbol"], axis = 'columns', inplace = True)
 
-    ct = datetime.datetime.now()
-    st.write("Current time:", ct)
     if data_choice == 'Yes':
         st.header(coin_choice +' daily activity')
         st.write(hist)
