@@ -92,6 +92,17 @@ if __name__=='__main__':
     data_choice = st.sidebar.radio("Show data",("No", "Yes"))
     coin_choice = st.sidebar.radio("Coin",("BTC", "ETH"))
 
+    np.random.seed(42)
+    window_len = 10
+    test_size = 0.2
+    zero_base = True
+    lstm_neurons = 100
+    epochs = 30
+    batch_size = 32
+    loss = 'mse'
+    dropout = 0.2
+    optimizer = 'adam'
+
     endpoint = 'https://min-api.cryptocompare.com/data/histoday'
     res = requests.get(endpoint + '?fsym='+coin_choice+'&tsym=USD&limit=500')
     hist = pd.DataFrame(json.loads(res.content)['Data'])
@@ -103,23 +114,12 @@ if __name__=='__main__':
 
     if data_choice == 'Yes':
         st.header(coin_choice +' daily activity')
-        st.write(hist)
+        st.write(hist.sort_values(by=['time'], ascending=False))
     
     train, test = train_test_split(hist, test_size=0.2)
 
     st.header(coin_choice+' Closing daily price')
     line_plot(train[target_col], test[target_col], 'training', 'test', title='')
-
-    np.random.seed(42)
-    window_len = 10
-    test_size = 0.2
-    zero_base = True
-    lstm_neurons = 100
-    epochs = 30
-    batch_size = 32
-    loss = 'mse'
-    dropout = 0.2
-    optimizer = 'adam'
 
     train, test, X_train, X_test, y_train, y_test = prepare_data(
         hist, target_col, window_len=window_len, zero_base=zero_base, test_size=test_size)
@@ -156,9 +156,6 @@ if __name__=='__main__':
     if data_choice == 'Yes':
         st.write('Target shape:' + str(targets.shape))
         st.write(targets)
-
-        st.write('Raw predicted shape:' + str(preds.shape))
-        st.write(preds)
 
         st.write('(Normalized) y_test shape:' + str(y_test.shape))
         st.write(y_test)
