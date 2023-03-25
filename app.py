@@ -89,7 +89,7 @@ if __name__=='__main__':
     ct = datetime.datetime.now()
     st.sidebar.write("Current time:", ct)
 
-    data_choice = st.sidebar.radio("Show data",("Yes", "No"))
+    data_choice = st.sidebar.radio("Show data",("No", "Yes"))
     coin_choice = st.sidebar.radio("Coin",("BTC", "ETH"))
 
     endpoint = 'https://min-api.cryptocompare.com/data/histoday'
@@ -130,6 +130,7 @@ if __name__=='__main__':
         st.write('X_Train shape: ' + str(X_train.shape))
         st.write('y_Train shape: ' + str(y_train.shape))
         st.write('X_Test shape: ' + str(X_test.shape))
+        st.write(X_test)
         st.write('y_Test shape: ' + str(y_test.shape))
 
     model = build_lstm_model(
