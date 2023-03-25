@@ -87,6 +87,8 @@ if __name__=='__main__':
     data_choice = st.radio("Show data",("Yes", "No"))
     coin_choice = st.radio("Coin",("BTC", "ETH"))
 
+    st.write(coin_choice)
+
     endpoint = 'https://min-api.cryptocompare.com/data/histoday'
     res = requests.get(endpoint + '?fsym="+coin_choice+"&tsym=USD&limit=500')
     hist = pd.DataFrame(json.loads(res.content)['Data'])
