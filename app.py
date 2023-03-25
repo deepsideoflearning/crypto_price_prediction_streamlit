@@ -1,8 +1,6 @@
 from PIL import Image
 import streamlit as st
 from constants import *
-from ai_improver import *
-from cv_scanner import *
 
 import json
 import datetime
