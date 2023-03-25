@@ -89,7 +89,7 @@ if __name__=='__main__':
 
     st.write(coin_choice)
     endpoint = 'https://min-api.cryptocompare.com/data/histoday'
-    request_string =endpoint + '?fsym="'+coin_choice+'"&tsym=USD&limit=500'
+    request_string =endpoint + '?fsym='+coin_choice+'&tsym=USD&limit=500'
     st.write(request_string)
     res = requests.get(endpoint + '?fsym="'+coin_choice+'"&tsym=USD&limit=500')
     hist = pd.DataFrame(json.loads(res.content)['Data'])
