@@ -3,6 +3,7 @@ import streamlit as st
 from constants import *
 
 import json
+import math
 import datetime
 from time import sleep
 import requests
@@ -59,16 +60,19 @@ def extract_window_data(df, window_len=5, zero_base=True):
     
 def prepare_data(df, target_col, window_len=10, zero_base=True, test_size=0.2):
     train_data, test_data = train_test_split(df, test_size=test_size)
-    st.sidebar.write('train_data shape:' + str(train_data.shape))
-    st.sidebar.write('test_data shape:' + str(test_data.shape))
     X_train = extract_window_data(train_data, window_len, zero_base)
-    st.sidebar.write('X_train shape:' + str(X_train.shape))
     X_test = extract_window_data(test_data, window_len, zero_base)
-    st.sidebar.write('X_test shape:' + str(X_test.shape))
     y_train = train_data[target_col][window_len:].values
-    st.sidebar.write('y_train shape:' + str(y_train.shape))
     y_test = test_data[target_col][window_len:].values
-    st.sidebar.write('y_test shape:' + str(y_test.shape))
+
+    if data_choice == 'Yes':
+        st.sidebar.write('train_data shape:' + str(train_data.shape))
+        st.sidebar.write('test_data shape:' + str(test_data.shape))
+        st.sidebar.write('X_train shape:' + str(X_train.shape))
+        st.sidebar.write('X_test shape:' + str(X_test.shape))
+        st.sidebar.write('y_train shape:' + str(y_train.shape))
+        st.sidebar.write('y_test shape:' + str(y_test.shape))
+
     if zero_base:
         y_train = y_train / train_data[target_col][:-window_len].values - 1
         y_test = y_test / test_data[target_col][:-window_len].values - 1
@@ -130,15 +134,6 @@ if __name__=='__main__':
     train, test, X_train, X_test, y_train, y_test = prepare_data(
         hist, target_col, window_len=window_len, zero_base=zero_base, test_size=test_size)
 
-    if data_choice == 'Yes':
-        st.write('Train shape: ' + str(train.shape))
-        st.write('Test shape: ' + str(test.shape))
-        st.write('X_Train shape: ' + str(X_train.shape))
-        st.write('y_Train shape: ' + str(y_train.shape))
-        st.write('X_Test shape: ' + str(X_test.shape))
-        st.write(X_test)
-        st.write('y_Test shape: ' + str(y_test.shape))
-
     model = build_lstm_model(
         X_train, output_size=1, neurons=lstm_neurons, dropout=dropout, loss=loss,
         optimizer=optimizer)
@@ -148,9 +143,10 @@ if __name__=='__main__':
     line_plot2(history.history['loss'], history.history['val_loss'], 'Train loss', 'Validation loss', title='')
 
     preds = model.predict(X_test).squeeze()
-    st.write('mae = ' + str(mean_absolute_error(preds, y_test)))
-    st.write('mse = ' + str(mean_squared_error(preds, y_test)))
-    st.write('r2 = ' + str(r2_score(y_test, preds)))
+ 
+    st.sidebar.write('mae = ' + str(mean_absolute_error(preds, y_test)))
+    st.sidebar.write('mse = ' + str(mean_squared_error(preds, y_test)))
+    st.sidebar.write('r2 = ' + str(r2_score(y_test, preds)))
 
     if data_choice == 'Yes':
         st.write('First test of window shape:' + str(test[target_col].values[:-window_len].shape))
@@ -170,6 +166,9 @@ if __name__=='__main__':
         st.write(preds)
 
     preds = pd.Series(index=targets.index, data=preds)
+
+    print('rmse = ' + str(math.sqrt(mean_squared_error(preds, targets))))
+    
     line_plot(targets, preds, 'actual', 'prediction', lw=3)
 
 
