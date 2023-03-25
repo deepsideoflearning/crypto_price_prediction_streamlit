@@ -102,19 +102,24 @@ if __name__=='__main__':
     data_choice = st.sidebar.radio("Show data",("No", "Yes"))
     coin_choice = st.sidebar.radio("Coin",("BTC", "ETH"))
 
+    st.sidebar.write("Data Parameters")
+    days = st.sidebar.radio("Days",(500,1000))
+    test_size = st.sidebar.radio("Test Size",(0.1,0.2))
+    window_len = st.sidebar.radio("Window Length",(5,10,20))
+
+    st.sidebar.write("LSTM Parameters")
+    batch_size = st.sidebar.radio("Batch Size",(8,16,32))
+    lstm_neurons = st.sidebar.radio("Neuron Count",(50,100,200))
+    epochs = st.sidebar.radio("Epochs",(15,30,60))
+    dropout = st.sidebar.radio("Dropout",(0.1,0.2,0.3))
+    optimizer = st.sidebar.radio("Optimizer",("adam"))
+    loss = st.sidebar.radio("Loss",("mse"))
+
     np.random.seed(42)
-    window_len = 10
-    test_size = 0.2
     zero_base = True
-    lstm_neurons = 100
-    epochs = 30
-    batch_size = 32
-    loss = 'mse'
-    dropout = 0.2
-    optimizer = 'adam'
 
     endpoint = 'https://min-api.cryptocompare.com/data/histoday'
-    res = requests.get(endpoint + '?fsym='+coin_choice+'&tsym=USD&limit=500')
+    res = requests.get(endpoint + '?fsym='+coin_choice+'&tsym=USD&limit='+str(days))
     hist = pd.DataFrame(json.loads(res.content)['Data'])
     hist = hist.set_index('time')
     hist.index = pd.to_datetime(hist.index, unit='s')
@@ -126,7 +131,7 @@ if __name__=='__main__':
         st.header(coin_choice +' daily activity')
         st.write(hist.sort_values(by=['time'], ascending=False))
     
-    train, test = train_test_split(hist, test_size=0.2)
+    train, test = train_test_split(hist, test_size=test_size)
 
     st.header(coin_choice+' Closing daily price')
     line_plot(train[target_col], test[target_col], 'training', 'test', title='')
